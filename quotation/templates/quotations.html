@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<div class="mt-3">
+  <a href="/quotations/list/" class="btn btn-primary me-2 fs-6">Invoice List</a>
+  <a href="/quotations/add-new-customer/" class="btn btn-primary me-2 fs-6">Add New Customer</a>
+</div>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Customer Name</th>
+        <th scope="col">Salesman Name</th>
+        <th scope="col">Total Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for customer in customer_data%}
+        <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td><a href="/quotations/{{customer.id}}" class="link-primary">{{customer.full_name}}</a></td>
+        <td>{{customer.salesman_name}}</td>
+        <td class="text-end">{{customer.total_amount}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

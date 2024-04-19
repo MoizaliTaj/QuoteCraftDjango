@@ -1,0 +1,10 @@
+django
+pytz
+fpdf
+num2words
+pillow
+sqlalchemy
+numpy
+pandas
+openpyxl
+xlrd

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<div class="container">
+    <form class="col-lg-8 col-md-10 col-sm-12 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4 class="mb-4">Customer Name: {{customer_data.full_name}}</h4>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-primary" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="date" value="{{todays_date}}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Payment Terms</label>
+            <input type="text" class="form-control" name="payment_terms" value="{{last_payment_terms}}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Attention To</label>
+            <input type="text" class="form-control" name="attention_to">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Narration Internal</label>
+            <textarea name="narration_internal" class="form-control" rows="4" cols="50"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Narration External</label>
+            <textarea name="narration_external" class="form-control" rows="4" cols="50"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add New Invoice</button>
+    </form>
+    <div class="mt-3 text-center"><a href="/quotations/add-new-salesman/" class="text-primary">Click here</a> to add a new salesman</div>
+</div>
+{% endblock %}

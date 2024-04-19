@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="/media/media/favicon.ico">
+        <title>{{page_title}}</title>
+        <link rel="stylesheet" href="/media/css/print.css">
+        <script>
+            function number_formater(numberString){
+                numberString = parseFloat(numberString);
+                numberString = (numberString + 0.0000000001).toFixed(2);
+                numberString = String(numberString)
+                crossed_decimal = false;
+                let output = ""
+                for (i=0; i<numberString.length; i++){
+                    output = output + numberString[i];
+                    if (numberString[i] == "."){
+                        crossed_decimal = true;
+                    }
+                    if (crossed_decimal == false){
+                        let remaining_number = numberString.slice(i+1).split('.')[0];
+                        if (Number.isNaN(parseFloat(remaining_number)) == false){
+                            if (remaining_number.length % 3 == 0){
+                                output = output + ","
+                            }
+                        }
+                    }
+                }
+                return output;
+            }
+            function update_numbers(size){
+                for (let i=1; i<=size; i++){
+                    document.getElementById("total_"+String(i)).innerHTML = number_formater(document.getElementById("total_"+String(i)).innerHTML);
+                    document.getElementById("rate_"+String(i)).innerHTML = number_formater(document.getElementById("rate_"+String(i)).innerHTML);
+                }
+                document.getElementById("cumulative_total").innerHTML = number_formater(document.getElementById("cumulative_total").innerHTML);
+                document.getElementById("vat").innerHTML = number_formater(document.getElementById("vat").innerHTML);
+                document.getElementById("grand_total").innerHTML = number_formater(document.getElementById("grand_total").innerHTML);
+            }
+            function update_numbers_(size){
+                for (let i=1; i<=size; i++){
+                    document.getElementById("rate_"+String(i)).innerHTML = number_formater(document.getElementById("rate_"+String(i)).innerHTML);
+                }
+            }
+        </script>
+    </head>
+    <body>
+        {% if item_data|length > 0 %}
+            <img class="header" src="/media/media/header.png" />
+            <div class="header_text">
+                {% if invoice_data.customer_full_name.salesman_name.mobile_number|length > 0 %}<a href="tel: {{invoice_data.customer_full_name.salesman_name.mobile_number}}" target="_blank" style="text-decoration:none;color:black;font-size:medium;">&#128241; {{invoice_data.customer_full_name.salesman_name.mobile_number}}</a> | {% endif %}
+                {% if invoice_data.customer_full_name.salesman_name.land_line_number|length > 0 %}<a href="tel: {{invoice_data.customer_full_name.salesman_name.land_line_number}}" target="_blank" style="text-decoration:none;color:black;font-size:medium;">&#9742; {{invoice_data.customer_full_name.salesman_name.land_line_number}}</a> | {% endif %}
+                {% if invoice_data.customer_full_name.salesman_name.email|length > 0 %}<a href="mailto: {{invoice_data.customer_full_name.salesman_name.email}}" target="_blank" style="text-decoration:none;color:black;font-size:medium;">&#9993; {{invoice_data.customer_full_name.salesman_name.email}}</a> | {% endif %}
+                <a style="text-decoration:none;color:black;font-size:medium;">TRN 100000000000001</a>
+                <br>
+                {% if type == "normal_proforma_only" %}
+                    Proforma Invoice
+                {% else %}
+                    Proforma Invoice / Quotation
+                {% endif %}
+            </div>
+            <div class="cust_details">
+                Customer Name : <strong>{{invoice_data.customer_full_name.full_name}}</strong>
+                {% if invoice_data.attention_to|length > 0 %} (<strong>{{invoice_data.attention_to}}</strong>){% endif %}
+                {% if invoice_data.customer_full_name.contact_number|length > 0 %}<br>Contact Number : <strong>{{invoice_data.customer_full_name.contact_number}}</strong>{% endif %}
+                {% if invoice_data.payment_terms|length > 0 %}<br>Payment Terms &nbsp;: <strong>{{invoice_data.payment_terms}}</strong>{% endif %}
+            </div>
+            <div class="date_ref">
+                Date : <strong>{{invoice_data.date}}</strong>
+                <br>
+                Reference # <strong>{{invoice_data.id}}</strong>
+            </div>
+            {% if type == 'normal' or type == 'normal_proforma_only' %}
+                <table class="tabledes">
+                    <tr><th class="border fontcust center head">Sr.</th><th class="border fontcust center head">Code</th><th class="border fontcust center head">Description</th><th class="border fontcust center head">Quantity</th><th class="border fontcust center head">Unit</th><th class="border fontcust center head">Unit Price</th><th class="border fontcust center head">Total</th></tr>
+                    {% for entry in item_data %}
+                    {% if forloop.counter|divisibleby:2 %}<tr class="light">{% else %}<tr class="dark">{% endif %}
+                        <td class="border fontcust center" >{{forloop.counter}}</td>
+                        <td class="border fontcust center">{{entry.code}}</td>
+                        <td class="border fontcust left">{{entry.description}}{% if entry.size|length > 0 %}, {{entry.size}}{% endif %}{% if entry.image %}<br><img class="prod_img" src="/media/{{entry.image}}" >{% endif %}</td>
+                        <td class="border fontcust center">{{entry.quantity}}</td>
+                        <td class="border fontcust center">{{entry.unit}}</td>
+                        <td class="border fontcust right" id="rate_{{forloop.counter}}" >{{entry.selling_rate}}</td>
+                        <td class="border fontcust right" id="total_{{forloop.counter}}" >{{entry.total}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr><td colspan="4" class="left fontcust" rowspan="2" style="font-family: Calibri, sans-serif;font-size:medium;" id="td_amount_in_words"></td><td colspan="2" class="border center fontcust head">Total</td><td class="border right fontcust" style="padding:2px;" id="cumulative_total" ></td></tr>
+                        <tr><td colspan="2" class="border center fontcust head">VAT @ 5%</td><td class="border right fontcust" style="padding:2px;" id="vat"></td></tr>
+                        <tr><td colspan="4"></td><td colspan="2" class="border center fontcust head">Total with VAT</td><td class="border right fontcust" style="padding:2px;" id="grand_total"></td></tr>
+                </table>
+                <div class="notice" style="position: relative; top: -10px;">Salesman Name: {{invoice_data.customer_full_name.salesman_name.full_name}}<br> | Printed on {{printed_on}}. | All the above prices are in UAE Dirhams. | Above quoted items are subject to prior sales. |</div>
+                {% if invoice_data.narration_external|length > 0 %}<pre  style="font-family: Calibri, sans-serif;font-size:small;position: relative; top: -15px;">{{invoice_data.narration_external}}</pre>{% endif %}
+            {% elif type == 'without_vat' %}
+                <table class="tabledes">
+
+                    <tr><th class="border fontcust center head">Sr.</th><th class="border fontcust center head">Code</th><th class="border fontcust center head">Description</th><th class="border fontcust center head">Quantity</th><th class="border fontcust center head">Unit</th><th class="border fontcust center head">Unit Price</th><th class="border fontcust center head">Total</th></tr>
+                    {% for entry in item_data %}
+                    {% if forloop.counter|divisibleby:2 %}<tr class="light">{% else %}<tr class="dark">{% endif %}
+                        <td class="border fontcust center" >{{forloop.counter}}</td>
+                        <td class="border fontcust center">{{entry.code}}</td>
+                        <td class="border fontcust left">{{entry.description}}{% if entry.size|length > 0 %}, {{entry.size}}{% endif %}{% if entry.image %}<br><img class="prod_img" src="/media/{{entry.image}}" >{% endif %}</td>
+                        <td class="border fontcust center">{{entry.quantity}}</td>
+                        <td class="border fontcust center">{{entry.unit}}</td>
+                        <td class="border fontcust right" id="rate_{{forloop.counter}}" >{{entry.selling_rate}}</td>
+                        <td class="border fontcust right" id="total_{{forloop.counter}}" >{{entry.total}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr><td colspan="4" class="left fontcust" rowspan="2" style="font-family: Calibri, sans-serif;font-size:medium;" id="td_amount_in_words"></td><td colspan="2" class="border center fontcust head">Total</td><td class="border right fontcust" style="padding:2px;" id="cumulative_total" ></td></tr>
+                </table>
+                <div class="notice" style="position: relative; top: 0px;">Salesman Name: {{invoice_data.customer_full_name.salesman_name.full_name}}<br> | Printed on {{printed_on}}. | All the above prices are in UAE Dirhams. | Above quoted items are subject to prior sales. |</div>
+                {% if invoice_data.narration_external|length > 0 %}<br><pre style="font-family: Calibri, sans-serif;font-size:small;position: relative; top: -15px;">{{invoice_data.narration_external}}</pre>{% endif %}
+            {% elif type == 'without_quantity' %}
+                <table class="tabledes">
+                    
+                    <tr><th class="border fontcust center head">Sr.</th><th class="border fontcust center head">Code</th><th class="border fontcust center head">Description</th><th class="border fontcust center head">Unit</th><th class="border fontcust center head">Unit Price</th></tr>
+                    
+                    {% for entry in item_data %}
+                    {% if forloop.counter|divisibleby:2 %}<tr class="light">{% else %}<tr class="dark">{% endif %}
+                        <td class="border fontcust center" >{{forloop.counter}}</td>
+                        <td class="border fontcust center">{{entry.code}}</td>
+                        <td class="border fontcust left">{{entry.description}}{% if entry.size|length > 0 %}, {{entry.size}}{% endif %}{% if entry.image %}<br><img class="prod_img" src="/media/{{entry.image}}" >{% endif %}</td>
+                        <td class="border fontcust center">{{entry.unit}}</td>
+                        <td class="border fontcust right" id="rate_{{forloop.counter}}" >{{entry.selling_rate}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <div class="notice">Salesman Name: {{invoice_data.customer_full_name.salesman_name.full_name}}<br> | Printed on {{printed_on}}. | All the above prices are in UAE Dirhams. | Above quoted items are subject to prior sales. |</div>
+                {% if invoice_data.narration_external|length > 0 %}<br><pre  style="font-family: Calibri, sans-serif;font-size:small;position: relative; top: -10px;">{{invoice_data.narration_external}}</pre>{% endif %}
+            {% endif %}
+        {% else %}
+            <p>No items. To add items search the product then click on add to list.</p>
+        {% endif %} 
+    </body>
+    <script>window.print()</script>
+    <script src="/media/js/convert_amount_to_words.js"></script>
+    {% if type == 'normal' or type == 'normal_proforma_only' %}
+        <script>
+            let grand_total = 0;
+            {% for entry in item_data %}
+                current_field_total = {{entry.total}};
+                grand_total += current_field_total;
+            {% endfor %}
+            document.getElementById("cumulative_total").textContent = grand_total;
+            document.getElementById("vat").textContent = (grand_total * 0.05).toFixed(2);
+            document.getElementById("grand_total").textContent = (grand_total * 1.05).toFixed(2);
+            document.getElementById("td_amount_in_words").textContent = "Amount in Words: " + convert_amount_to_words((grand_total * 1.05).toFixed(2));
+            update_numbers({{item_data|length}})
+        </script>
+
+    {% elif type == 'without_vat' %}
+        <script>
+            let grand_total = 0;
+            {% for entry in item_data %}
+                current_field_total = {{entry.total}};
+                grand_total += current_field_total;
+            {% endfor %}
+            document.getElementById("cumulative_total").textContent = number_formater(grand_total);
+            document.getElementById("td_amount_in_words").textContent = "Amount in Words: " + convert_amount_to_words((grand_total).toFixed(2));
+            update_numbers_({{data|length}})</script>
+    {% elif type == 'without_quantity' %}
+        <script>update_numbers_({{data|length}})</script>
+    {% endif %}
+</html>

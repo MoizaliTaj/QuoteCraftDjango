@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="col-auto">
+    <a href="/quotations/" class="link-info fs-6">&larr; Back to Customer List</a>
+</div>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Invoice ID</th>
+        <th scope="col" style="width:95px;">Date</th>
+        <th scope="col">Customer Name</th>
+        <th scope="col">Salesman Name</th>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for invoice in invoice_data%}
+        <tr>
+        <td scope="row">{{forloop.counter}}</th>
+        <td><a href="/invoice-manager/{{invoice.id}}" class="link-primary">{{invoice.id}}</a></td>
+        <td>{{ invoice.date|date:"y-m-d" }}</td>
+        <td>{{invoice.customer_full_name}}</td>
+        <td>{{invoice.customer_full_name.salesman_name.full_name}}</td>
+        <td>{{invoice.invoice_amount}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block main_content %}
+<form>
+    <input type="text" class="form-control" name="invoice_id" placeholder="Invoice ID" value="{{invoice_id}}">
+    <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+<hr>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Type</th>
+        <th scope="col">User</th>
+        <th scope="col">Details</th>
+        <th scope="col">Date Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for line in logs_data %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{line.type}}</td>
+        <td>{{line.user}}</td>
+        <td><pre>{{line.details}}</pre></td>
+        <td>{{line.date_time}}</td>
+      </tr>
+      {% endfor %}
+  
+    </tbody>
+  </table>
+
+{% endblock %}

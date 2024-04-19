@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<div class="container">
+    <form class="col-lg-8 col-md-10 col-sm-12 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+        <h4 class="mb-4">Update Salesman Detilas</h4>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-primary" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label">Salesman Name</label>
+            <input type="text" class="form-control" name="full_name" value="{{salesman_data.full_name}}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mobile Number</label>
+            <input type="text" class="form-control" name="mobile_number" value="{{salesman_data.mobile_number}}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Landline Number</label>
+            <input type="text" class="form-control" name="land_line_number" value="{{salesman_data.land_line_number}}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" value="{{salesman_data.email}}">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Update Salesman</button>
+    </form>
+</div>
+{% endblock %}

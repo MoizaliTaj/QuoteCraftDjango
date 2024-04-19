@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block main_content %}
+<form>
+    <input type="text" class="form-control" name="search" placeholder="Enter search query here" value="{{search_query}}">
+    <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+<hr>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Invoice ID</th>
+        <th scope="col">Customer Name</th>
+        <th scope="col">Code</th>
+        <th scope="col">Description</th>
+        <th scope="col">Size</th>
+        <th scope="col">Packaging</th>
+        <th scope="col">unit</th>
+        <th scope="col">Selling Rate</th>
+        <th scope="col">quantity</th>
+        <th scope="col">total</th>
+        <th scope="col">purchase_rate</th>
+        <th scope="col">notes</th>
+        <th scope="col">Last Edited By</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for line in history_data %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{line.invoice.id}}</td>
+        <td>{{line.invoice.customer_full_name.full_name}}</td>
+        <td>{{line.code}}</td>
+        <td>{{line.description}}</td>
+        <td>{{line.size}}</td>
+        <td>{{line.packaging}}</td>
+        <td>{{line.unit}}</td>
+        <td>{{line.selling_rate}}</td>
+        <td>{{line.quantity}}</td>
+        <td>{{line.total}}</td>
+        <td>{{line.purchase_rate}}</td>
+        <td>{{line.notes}}</td>
+        <td>{{line.last_edited_by}}</td>
+      </tr>
+      {% endfor %}
+  
+    </tbody>
+  </table>
+
+{% endblock %}

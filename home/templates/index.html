@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<p class="text-body-primary">This web application is designed for prepapring quotations for {{firm_name}}.</p>
+<ul class="list-group">
+    <li class="list-group-item active">Follow the below steps to create a new quotation.</li>
+    <li class="list-group-item">Step 1: Click on <a href="/quotations/" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"> Quotations Page</a>.</li>
+    <li class="list-group-item">Step 2. Add customer to the system if its a new customer.</li>
+    <li class="list-group-item">Step 3. Add new invoice to the customer.</li>
+    <li class="list-group-item">Step 4. Add items to the quotation.</li>
+</ul>
+<p class="text-body-secondary mt-2">Altough I have tried to ensure the data is accurate but its always advisable to recheck data with Vachet. Also check the last updated date and time in the footer. This shows the last time excel data was imported to this app.</p>
+{% endblock %}
