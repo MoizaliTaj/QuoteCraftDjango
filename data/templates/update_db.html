@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<form class="col-8 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+    {% csrf_token %} 
+    <h4>Update Data Base</h4>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-primary" role="alert">{{message}}</div>    
+        {% endfor %}
+    {% endif %}
+    <div class="mb-3">
+        <label class="form-label">Sanitary</label>
+        <input type="file" class="form-control" name="sanitary" accept=".xls, .xlsx" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Stock</label>
+        <input type="file" class="form-control" name="stock" accept=".xls, .xlsx" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Vachet</label>
+        <input type="file" class="form-control" name="vachet" accept=".xls, .xlsx" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+{% endblock %}

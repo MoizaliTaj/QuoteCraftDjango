@@ -59,6 +59,8 @@ urlpatterns = [
     path('logout/', logout_page, name="logout_page"),
     path('change_password/', change_password, name="change_password"),
     path('unauthorised/', unauthorised, name="unauthorised"),
+    path('update-db/', update_db, name="update-db"),
+
 ]
 
 

@@ -74,3 +74,36 @@ def add_product(request, product_id):
     except:
         return JsonResponse({})
 
+    
+@login_required(login_url="/login/")
+def update_db(request):
+    if (request.user.is_superuser):
+        if request.method == "POST":
+            # Define the desired file names
+            file_names = {
+                'sanitary': 'sanitary.xlsx',
+                'stock': 'stock.xlsx',
+                'vachet': 'vachet.xls'
+            }
+
+            # Handle file uploads
+            for field_name, desired_name in file_names.items():
+                file = request.FILES.get(field_name)
+                if file:
+                    # Construct the file path
+                    file_path = os.path.join(settings.BASE_DIR, 'public', 'static', 'excel_files', desired_name)
+                    # Save the file to the desired directory
+                    with open(file_path, 'wb') as destination:
+                        for chunk in file.chunks():
+                            destination.write(chunk)
+
+            messages.success(request, "Files uploaded successfully. Database will be updated later.")
+            return render(request, "update_db.html", {"page_title": "Update Data Base", "last_updated": get_last_updated_date_time()})
+
+        context = {
+        "page_title": "Update Data Base",
+        "last_updated" : get_last_updated_date_time()
+        }
+        return render(request, "update_db.html",context)
+    else:
+        return redirect("/unauthorised/")
